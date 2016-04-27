@@ -1,11 +1,16 @@
 package com.lightbringer.game.world;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class WorldScreen implements Screen {
 
@@ -17,6 +22,8 @@ public class WorldScreen implements Screen {
 	
 	OrthographicCamera camera;
 	SpriteBatch batch;
+	
+	Stage stage;
 	
 	public WorldScreen(String worldName){
 		this.worldName = worldName;
@@ -34,7 +41,20 @@ public class WorldScreen implements Screen {
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 30, 20);
 		mapRenderer.setView(camera);
+		
+		Viewport viewport = new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
+		stage = new Stage(viewport);
+		Gdx.input.setInputProcessor(stage);
+		stage.setViewport(viewport);
+		
+//		TiledMapTileLayer blockLayer = (TiledMapTileLayer) map.getLayers().get("Blocks");
+//		blockLayer.getCell(1, 1).getTile().getProperties().
 	}
+	
+	public void update(){
+		
+	}
+	
 	@Override
 	public void render(float delta) {
 		mapRenderer.render();

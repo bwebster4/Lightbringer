@@ -7,6 +7,7 @@ public class ElementManager {
 	
 	TextureAtlas landAtlas;
 	
+	
 	public void show(){
 		landAtlas = new TextureAtlas("land.txt");
 		
