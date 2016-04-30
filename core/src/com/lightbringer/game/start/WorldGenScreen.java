@@ -2,26 +2,43 @@ package com.lightbringer.game.start;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.lightbringer.game.GameMain;
+import com.lightbringer.game.world.MapElem;
 
 public class WorldGenScreen implements Screen{
 
-	Stage create, load, view;
+	GameMain gameMain;
+	
+	Stage stage;
 	Skin skin;
 	SpriteBatch batch;
 	
+	static int small_world = 128;
+	
 	Thread genThread;
+	
+	int state;
+	private static int create = 0, load = 1, view = 2;
+	
+	private int loadCount = 0;
+	Label loading;
+	
+	public WorldGenScreen(GameMain gameMain){
+		this.gameMain = gameMain;
+	}
 	
 	@Override
 	public void show() {
-		create = new Stage();
-		Gdx.input.setInputProcessor(create);
+		stage = new Stage();
+		Gdx.input.setInputProcessor(stage);
 
 		batch = new SpriteBatch();
 		skin = new Skin(Gdx.files.internal("uiskin.json"));
@@ -39,13 +56,32 @@ public class WorldGenScreen implements Screen{
 		quit.addAction(new QuitAction(quit));
 		table.add(quit).size(100, 50).pad(20);
 		
-		create.addActor(table);
+		stage.addActor(table);
+		
+		state = create;
 	}
 
 	@Override
 	public void render(float delta) {
-		// TODO Auto-generated method stub
 		
+		if (state == load){
+			if(loadCount == 30){
+				if(loading.textEquals("Loading."))
+					loading.setText("Loading..");
+				else if(loading.textEquals("Loading.."))
+					loading.setText("Loading...");
+				else if(loading.textEquals("Loading..."))
+					loading.setText("Loading.");
+				loadCount = 0;
+			}else{
+				loadCount++;
+			}
+		}
+		
+		Gdx.gl.glClearColor(0, 0, 0, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		stage.act();
+		stage.draw();
 	}
 
 	@Override
@@ -71,20 +107,36 @@ public class WorldGenScreen implements Screen{
 	@Override
 	public void dispose() {
 		batch.dispose();
-		create.dispose();
+		stage.dispose();
+		skin.dispose();
 		
 	}
 	
 	private void createWorld(int size){
+		genThread = new Thread(new WorldGen());
+		genThread.start();
 		
+		state = load;
+		
+		stage.clear();
+		
+		Table table = new Table();
+		table.setFillParent(true);
+		
+		loading = new Label("Loading.", skin);
+		table.add(loading).center();
+		stage.addActor(table);
 	}
 
 	private class WorldGen implements Runnable{
 
+		MapElem elems[][];
+		
 		@Override
 		public void run() {
 			
 		}
+		
 		
 	}
 	
@@ -99,7 +151,7 @@ public class WorldGenScreen implements Screen{
 		@Override
 		public boolean act(float delta) {
 			if(button.isChecked()){
-				createWorld();				
+				createWorld(small_world);				
 			}
 			return false;
 		}
@@ -116,7 +168,7 @@ public class WorldGenScreen implements Screen{
 		@Override
 		public boolean act(float delta) {
 			if(button.isChecked()){
-				//gameMain.switchState(GameMain.end);
+				gameMain.switchState(GameMain.toStart);
 			}
 			return false;
 		}
