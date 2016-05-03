@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.lightbringer.game.GameMain;
 import com.lightbringer.game.world.MapElem;
+import com.lightbringer.game.world.MapLoc;
 
 public class WorldGenScreen implements Screen{
 
@@ -113,7 +114,7 @@ public class WorldGenScreen implements Screen{
 	}
 	
 	private void createWorld(int size){
-		genThread = new Thread(new WorldGen());
+		genThread = new Thread(new WorldGen(size));
 		genThread.start();
 		
 		state = load;
@@ -130,11 +131,22 @@ public class WorldGenScreen implements Screen{
 
 	private class WorldGen implements Runnable{
 
-		MapElem elems[][];
+		MapLoc locs[][];
+		int size;
+		
+		public WorldGen(int size){
+			this.size = size;
+		}
 		
 		@Override
 		public void run() {
-			
+//			locs = new MapLoc[size][size];
+//			for (int x = 0; x < size; x++){
+//				for(int y = 0; y < size; y++){
+//					locs[x][y] = new MapLoc(x, y);
+//					locs[x][y].addElement(element);
+//				}
+//			}
 		}
 		
 		

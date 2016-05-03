@@ -8,6 +8,8 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -24,6 +26,7 @@ public class WorldScreen implements Screen {
 	SpriteBatch batch;
 	
 	Stage stage;
+	World world;
 	
 	public WorldScreen(String worldName){
 		this.worldName = worldName;
@@ -31,8 +34,10 @@ public class WorldScreen implements Screen {
 	
 	@Override
 	public void show() {
+		world = new World(new Vector2(0, 0), true);
+		
 		elemManager = new ElementManager();
-		elemManager.show();
+		elemManager.show(world);
 		
 		map = new TmxMapLoader().load(worldName);
 		float unitScale = 1 / 16f;
@@ -50,7 +55,7 @@ public class WorldScreen implements Screen {
 //		TiledMapTileLayer blockLayer = (TiledMapTileLayer) map.getLayers().get("Blocks");
 //		blockLayer.getCell(1, 1).getTile().getProperties().
 	}
-	
+
 	public void update(){
 		
 	}
@@ -58,6 +63,8 @@ public class WorldScreen implements Screen {
 	@Override
 	public void render(float delta) {
 		mapRenderer.render();
+		
+		world.step(1/60f, 6, 2);
 	}
 
 	@Override

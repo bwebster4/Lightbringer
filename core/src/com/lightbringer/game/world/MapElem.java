@@ -9,12 +9,16 @@ public class MapElem {
 	MapElemType type;
 	Sprite sprite;
 	
+	
 	public MapElem(MapElemType type, TextureRegion texture, int x, int y){
 		this.type = type;
 		sprite = new Sprite(texture);
 		sprite.setCenter(x, y);
 		sprite.scale(1f);
 		
+		if(type.isBlock()){
+			
+		}
 	}
 	
 	public void draw(SpriteBatch batch){
