@@ -1,26 +1,38 @@
 package com.lightbringer.game.world;
 
-import java.util.ArrayList;
-
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
 
 public class ElementManager {
 	
 	TextureAtlas landAtlas;
 	World world;
+	ArrayMap<String, Layer> layers;
 	
 	public void show(World world){
 		landAtlas = new TextureAtlas("land.txt");
 		this.world = world;
 		
+		Thread genThread = new Thread(new WorldGen(256));
+		genThread.start();
+	}
+	
+	public void render(Rectangle area, SpriteBatch batch){
+		for(Layer layer : layers.values){
+			layer.render(area, batch);
+		}
 	}
 	
 	public MapElem createMapElem(MapElemType type, int x, int y){
 		return new MapElem(type, getLandTexture(type.getTextureName()), x, y);
+	}
+	
+	public void setLayers(ArrayMap<String, Layer> layers){
+		this.layers = layers;
 	}
 	
 	private TextureRegion getLandTexture(String name){
@@ -38,6 +50,14 @@ public class ElementManager {
 		public Layer(int size, String name){
 			elems = new MapElem[size][size];
 			this.name = name;
+		}
+		
+		public void render(Rectangle area, SpriteBatch batch){
+			for(int x = (int) area.x; x < area.x + area.width; x++){
+				for(int y = (int) area.y; y < area.y + area.height; y++){
+					elems[x][y].draw(batch);
+				}
+			}
 		}
 		
 		public String getName() {
@@ -67,6 +87,9 @@ public class ElementManager {
 					layers.get("Ground").addElem(createMapElem(MapElemType.Ground, x, y), x, y);
 				}
 			}
+			
+			
+			setLayers(layers);
 		}
 		
 		

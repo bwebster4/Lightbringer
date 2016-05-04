@@ -11,7 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.lightbringer.game.GameMain;
-import com.lightbringer.game.world.MapElem;
 import com.lightbringer.game.world.MapLoc;
 
 public class WorldGenScreen implements Screen{
