@@ -2,7 +2,7 @@ package com.lightbringer.game.world;
 
 public enum MapElemType {
 
-	Ground("Ground", "land0006.png", false);
+	Ground("Ground", "land0006", false);
 	
 
 	private String name, textureName;
@@ -10,6 +10,7 @@ public enum MapElemType {
 	MapElemType(String name, String textureName, boolean isWalkable){
 		this.name = name;
 		this.isBlock = isWalkable;
+		this.textureName = textureName;
 	}
 	public String getName() {
 		return name;

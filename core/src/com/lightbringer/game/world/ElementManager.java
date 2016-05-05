@@ -9,20 +9,22 @@ import com.badlogic.gdx.utils.ArrayMap;
 
 public class ElementManager {
 	
+	WorldScreen worldScreen;
 	TextureAtlas landAtlas;
 	World world;
 	ArrayMap<String, Layer> layers;
 	
-	public void show(World world){
+	public void show(World world, WorldScreen worldScreen){
 		landAtlas = new TextureAtlas("land.txt");
 		this.world = world;
+		this.worldScreen = worldScreen;
 		
 		Thread genThread = new Thread(new WorldGen(256));
 		genThread.start();
 	}
 	
 	public void render(Rectangle area, SpriteBatch batch){
-		for(Layer layer : layers.values){
+		for(Layer layer : layers.values()){
 			layer.render(area, batch);
 		}
 	}
@@ -90,6 +92,7 @@ public class ElementManager {
 			
 			
 			setLayers(layers);
+			worldScreen.setState(WorldScreen.PLAY_STATE);
 		}
 		
 		

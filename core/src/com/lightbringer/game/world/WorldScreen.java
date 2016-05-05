@@ -20,23 +20,23 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class WorldScreen implements Screen {
 
-	ElementManager elemManager;
+	private ElementManager elemManager;
 	
 	String worldName;
 	
-	OrthographicCamera camera;
-	Rectangle camArea;
-	SpriteBatch batch;
+	private OrthographicCamera camera;
+	private Rectangle camArea;
+	private SpriteBatch batch;
 	
-	Stage worldUI;
-	World world;
+	private Stage worldUI;
+	private World world;
 	
-	Skin skin;
-	Label loading;
+	private Skin skin;
+	private Label loading;
 	
 	static final int LOAD_STATE = 0, PLAY_STATE = 1;
-	int state = 0;
-	
+	private int state = 0;
+
 	public WorldScreen(String worldName){
 		this.worldName = worldName;
 	}
@@ -46,7 +46,9 @@ public class WorldScreen implements Screen {
 		world = new World(new Vector2(0, 0), true);
 		
 		elemManager = new ElementManager();
-		elemManager.show(world);
+		elemManager.show(world, this);
+		
+		batch = new SpriteBatch();
 		
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 30, 20);
@@ -56,7 +58,7 @@ public class WorldScreen implements Screen {
 		
 		worldUI = new Stage();
 		Gdx.input.setInputProcessor(worldUI);
-		worldUI.setViewport(viewport);
+		//worldUI.setViewport(viewport);
 		skin = new Skin(Gdx.files.internal("uiskin.json"));
 		
 		Table table = new Table();
@@ -66,32 +68,34 @@ public class WorldScreen implements Screen {
 		table.add(loading).center();
 		worldUI.addActor(table);
 		
-//		TiledMapTileLayer blockLayer = (TiledMapTileLayer) map.getLayers().get("Blocks");
-//		blockLayer.getCell(1, 1).getTile().getProperties().
 	}
 
+	private int loadCount = 0;
+	
 	@Override
 	public void render(float delta) {
-//		if (state == load){
-//			if(loadCount == 30){
-//				if(loading.textEquals("Loading."))
-//					loading.setText("Loading..");
-//				else if(loading.textEquals("Loading.."))
-//					loading.setText("Loading...");
-//				else if(loading.textEquals("Loading..."))
-//					loading.setText("Loading.");
-//				loadCount = 0;
-//			}else{
-//				loadCount++;
-//			}
-//		}
+
 		
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		batch.begin();
 		
 		switch(state){
 		case LOAD_STATE:
+				if(loadCount == 30){
+				if(loading.textEquals("Loading."))
+					loading.setText("Loading..");
+				else if(loading.textEquals("Loading.."))
+					loading.setText("Loading...");
+				else if(loading.textEquals("Loading..."))
+					loading.setText("Loading.");
+				loadCount = 0;
+			}else{
+				loadCount++;
+			}
 			
+			worldUI.act();
+			worldUI.draw();
 			break;
 		case PLAY_STATE:
 			updateCamArea();
@@ -104,6 +108,7 @@ public class WorldScreen implements Screen {
 			break;
 		}
 
+		batch.end();
 	}
 
 	private void updateCamArea(){		
@@ -137,6 +142,14 @@ public class WorldScreen implements Screen {
 		
 	}
 
+	public int getState() {
+		return state;
+	}
+
+	public void setState(int state) {
+		this.state = state;
+	}
+	
 	@Override
 	public void dispose() {
 		// TODO Auto-generated method stub
