@@ -51,7 +51,9 @@ public class WorldScreen implements Screen {
 		batch = new SpriteBatch();
 		
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, 30, 20);
+		camera.setToOrtho(false, 30f, 20f);
+//		camera.zoom = 28f;
+		camera.update();
 		camArea = new Rectangle(camera.position.x, camera.position.y, camera.viewportWidth, camera.viewportHeight);
 		
 		Viewport viewport = new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
@@ -78,7 +80,8 @@ public class WorldScreen implements Screen {
 		
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		batch.begin();
+		
+		batch.setProjectionMatrix(camera.combined);
 		
 		switch(state){
 		case LOAD_STATE:
@@ -100,15 +103,20 @@ public class WorldScreen implements Screen {
 		case PLAY_STATE:
 			updateCamArea();
 			
+			batch.begin();
+
 			elemManager.render(camArea, batch);
+			
+			batch.end();
+
 			worldUI.draw();
 			
 			worldUI.act();
 			world.step(1/60f, 6, 2);
+
 			break;
 		}
 
-		batch.end();
 	}
 
 	private void updateCamArea(){		
@@ -147,7 +155,12 @@ public class WorldScreen implements Screen {
 	}
 
 	public void setState(int state) {
+		if(this.state == WorldScreen.LOAD_STATE && state == PLAY_STATE){
+			worldUI.clear();
+		}
 		this.state = state;
+		
+		
 	}
 	
 	@Override

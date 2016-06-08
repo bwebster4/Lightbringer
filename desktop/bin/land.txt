@@ -1,7 +1,7 @@
 land.png
 size: 1279, 512
 format: RGBA8888
-filter: Linear,Linear
+filter: Linear,Nearest
 repeat: none
 caves000
   rotate: false

@@ -16,8 +16,7 @@ public class MapElem {
 		this.type = type;
 		sprite = new Sprite(texture);
 		sprite.setCenter(x, y);
-		sprite.scale(1f);
-		
+		sprite.setSize(1.1f, 1.1f);
 		if(type.isBlock()){
 			
 		}

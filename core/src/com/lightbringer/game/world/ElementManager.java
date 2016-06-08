@@ -1,5 +1,6 @@
 package com.lightbringer.game.world;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -54,9 +55,10 @@ public class ElementManager {
 			this.name = name;
 		}
 		
-		public void render(Rectangle area, SpriteBatch batch){
-			for(int x = (int) area.x; x < area.x + area.width; x++){
-				for(int y = (int) area.y; y < area.y + area.height; y++){
+		public void render(Rectangle area, SpriteBatch batch){		
+//			The camera rectangle has incorrect values. This will need to be fixed
+			for(int x = (int) area.x- 8; x < area.x + area.width - 4; x++){
+				for(int y = (int) area.y - 2; y < area.y + area.height; y++){
 					elems[x][y].draw(batch);
 				}
 			}
