@@ -24,6 +24,8 @@ public class WorldScreen implements Screen {
 	
 	String worldName;
 	
+	float WIDTH, HEIGHT;
+	
 	private OrthographicCamera camera;
 	private Rectangle camArea;
 	private SpriteBatch batch;
@@ -45,22 +47,27 @@ public class WorldScreen implements Screen {
 	public void show() {
 		world = new World(new Vector2(0, 0), true);
 		
+		WIDTH = Gdx.graphics.getWidth();
+		HEIGHT = Gdx.graphics.getHeight();
+		
 		elemManager = new ElementManager();
 		elemManager.show(world, this);
 		
 		batch = new SpriteBatch();
 		
-		camera = new OrthographicCamera();
-		camera.setToOrtho(false, 30f, 20f);
-//		camera.zoom = 28f;
+		camera = new OrthographicCamera(1f, 1f * HEIGHT / WIDTH);
+		camera.setToOrtho(false, 30f, 30f * (float) HEIGHT / WIDTH);
+
 		camera.update();
 		camArea = new Rectangle(camera.position.x, camera.position.y, camera.viewportWidth, camera.viewportHeight);
+		Gdx.app.log("WS", "CamArea: " + camArea.x + " " + camArea.y + " " + camArea.width + " " + camArea.height);
 		
-		Viewport viewport = new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
+//		Viewport viewport = new ExtendViewport(WIDTH, HEIGHT, camera);
+//		viewport.setCamera(camera);
 		
 		worldUI = new Stage();
 		Gdx.input.setInputProcessor(worldUI);
-		//worldUI.setViewport(viewport);
+//		worldUI.setViewport(viewport);
 		skin = new Skin(Gdx.files.internal("uiskin.json"));
 		
 		Table table = new Table();
@@ -80,7 +87,6 @@ public class WorldScreen implements Screen {
 		
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
 		batch.setProjectionMatrix(camera.combined);
 		
 		switch(state){
@@ -101,7 +107,7 @@ public class WorldScreen implements Screen {
 			worldUI.draw();
 			break;
 		case PLAY_STATE:
-			updateCamArea();
+			updateCam(delta);
 			
 			batch.begin();
 
@@ -119,11 +125,14 @@ public class WorldScreen implements Screen {
 
 	}
 
-	private void updateCamArea(){		
-		camArea.x = camera.position.x;
-		camArea.y = camera.position.y;
+	private void updateCam(float delta){
+		camera.update();
+		camera.translate(1f * delta , 0 * delta);
+		camArea.x = camera.position.x - camera.viewportWidth / 2;
+		camArea.y = camera.position.y - camera.viewportHeight / 2;
 		camArea.height = camera.viewportHeight;
 		camArea.width = camera.viewportWidth;
+
 	}
 	
 	@Override

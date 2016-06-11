@@ -34,6 +34,15 @@ public class ElementManager {
 		return new MapElem(type, getLandTexture(type.getTextureName()), x, y);
 	}
 	
+	public void updateTextures(){
+		/* 0 1 2
+		 * 3 4 5
+		 * 6 7 8
+		 */
+		
+		
+	}
+	
 	public void setLayers(ArrayMap<String, Layer> layers){
 		this.layers = layers;
 	}
@@ -56,12 +65,18 @@ public class ElementManager {
 		}
 		
 		public void render(Rectangle area, SpriteBatch batch){		
-//			The camera rectangle has incorrect values. This will need to be fixed
-			for(int x = (int) area.x- 8; x < area.x + area.width - 4; x++){
-				for(int y = (int) area.y - 2; y < area.y + area.height; y++){
-					elems[x][y].draw(batch);
+			for(int x = (int) (area.x - 1); x < area.x + area.width + 1; x++){
+				for(int y = (int)( area.y - 1); y < area.y + area.height + 1; y++){
+					try{
+					if(elems[x][y] != null)
+						elems[x][y].draw(batch);
+					}catch(IndexOutOfBoundsException e){
+						
+					}
 				}
 			}
+			
+			
 		}
 		
 		public String getName() {
@@ -92,6 +107,13 @@ public class ElementManager {
 				}
 			}
 			
+			layers.insert(layers.size, "Blocks", new Layer(size, "Blocks"));
+			for(int x = 0; x < size; x++){
+				for(int y = 0; y < size; y++){
+					if ((x < 3 || x > size - 4) && (y < 3 || y > size - 4))
+						layers.get("Blocks").addElem(createMapElem(MapElemType.Stone, x, y), x, y);
+				}
+			}
 			
 			setLayers(layers);
 			worldScreen.setState(WorldScreen.PLAY_STATE);

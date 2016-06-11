@@ -1,5 +1,6 @@
 package com.lightbringer.game.world;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -15,7 +16,7 @@ public class MapElem {
 	public MapElem(MapElemType type, TextureRegion texture, int x, int y){
 		this.type = type;
 		sprite = new Sprite(texture);
-		sprite.setCenter(x, y);
+		sprite.setPosition(x, y);
 		sprite.setSize(1.1f, 1.1f);
 		if(type.isBlock()){
 			
@@ -26,4 +27,8 @@ public class MapElem {
 		sprite.draw(batch);
 	}
 	
+	public void updateTexture(TextureRegion texture){
+		sprite.setRegion(texture);
+		
+	}
 }
