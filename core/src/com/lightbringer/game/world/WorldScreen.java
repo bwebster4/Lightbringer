@@ -56,7 +56,7 @@ public class WorldScreen implements Screen {
 		WIDTH = Gdx.graphics.getWidth();
 		HEIGHT = Gdx.graphics.getHeight();
 		
-		worldSize = 256;
+		worldSize = 64;
 		
 		elemManager = new ElementManager();
 		elemManager.show(world, worldSize, this);
@@ -65,7 +65,7 @@ public class WorldScreen implements Screen {
 		
 		camera = new OrthographicCamera(1f, 1f * HEIGHT / WIDTH);
 		camera.setToOrtho(false, 30f, 30f * (float) HEIGHT / WIDTH);
-		camSpeed = new Vector2(0, 0);
+		camSpeed = new Vector2(-.5f, 0);
 		camera.update();
 		camArea = new Rectangle(camera.position.x, camera.position.y, camera.viewportWidth, camera.viewportHeight);
 		Gdx.app.log("WS", "CamArea: " + camArea.x + " " + camArea.y + " " + camArea.width + " " + camArea.height);

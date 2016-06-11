@@ -87,10 +87,12 @@ public class ElementManager {
 	}
 	
 	public void updateTextures(int[] bounds, String layerName){
-		/* 0 1 2
+		/* Texture Indices
+		 * 0 1 2
 		 * 3 4 5
 		 * 6 7 8
 		 * 
+		 * areBlocks indices
 		 * _ 0 _
 		 * 1 _ 2
 		 * _ 3 _
@@ -202,7 +204,7 @@ public class ElementManager {
 			}			
 			setLayers(layers);
 			
-			updateTextures(new int[]{0, size - 1, 0, size - 1}, "Blocks");
+			updateTextures(new int[]{1, size - 2, 1, size - 2}, "Blocks");
 			
 			worldScreen.setState(WorldScreen.PLAY_STATE);
 		}
