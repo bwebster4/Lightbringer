@@ -10,6 +10,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -25,13 +26,17 @@ public class WorldScreen implements Screen {
 	String worldName;
 	
 	float WIDTH, HEIGHT;
+	int worldSize;
 	
 	private OrthographicCamera camera;
 	private Rectangle camArea;
+	private Vector2 camSpeed;
+	
 	private SpriteBatch batch;
 	
 	private Stage worldUI;
 	private World world;
+	private Box2DDebugRenderer debugRenderer;
 	
 	private Skin skin;
 	private Label loading;
@@ -46,18 +51,21 @@ public class WorldScreen implements Screen {
 	@Override
 	public void show() {
 		world = new World(new Vector2(0, 0), true);
+		debugRenderer = new Box2DDebugRenderer();
 		
 		WIDTH = Gdx.graphics.getWidth();
 		HEIGHT = Gdx.graphics.getHeight();
 		
+		worldSize = 256;
+		
 		elemManager = new ElementManager();
-		elemManager.show(world, this);
+		elemManager.show(world, worldSize, this);
 		
 		batch = new SpriteBatch();
 		
 		camera = new OrthographicCamera(1f, 1f * HEIGHT / WIDTH);
 		camera.setToOrtho(false, 30f, 30f * (float) HEIGHT / WIDTH);
-
+		camSpeed = new Vector2(0, 0);
 		camera.update();
 		camArea = new Rectangle(camera.position.x, camera.position.y, camera.viewportWidth, camera.viewportHeight);
 		Gdx.app.log("WS", "CamArea: " + camArea.x + " " + camArea.y + " " + camArea.width + " " + camArea.height);
@@ -115,6 +123,8 @@ public class WorldScreen implements Screen {
 			
 			batch.end();
 
+//			debugRenderer.render(world, camera.combined);
+			
 			worldUI.draw();
 			
 			worldUI.act();
@@ -124,14 +134,43 @@ public class WorldScreen implements Screen {
 		}
 
 	}
-
+	
 	private void updateCam(float delta){
+		
+		
+		camera.translate(camSpeed.x * delta , camSpeed.y * delta);
+		
 		camera.update();
-		camera.translate(1f * delta , 0 * delta);
 		camArea.x = camera.position.x - camera.viewportWidth / 2;
 		camArea.y = camera.position.y - camera.viewportHeight / 2;
 		camArea.height = camera.viewportHeight;
 		camArea.width = camera.viewportWidth;
+		
+		if(camArea.x < 0 ){
+			camera.position.x = camera.viewportWidth / 2;
+			camera.update();
+			camArea.x = camera.position.x - camera.viewportWidth / 2;
+			camSpeed.set(0, 25f);
+		}else if(camArea.x + camArea.width > worldSize){
+			camera.position.x = worldSize - camArea.width / 2;
+			camera.update();
+			camArea.x = camera.position.x - camera.viewportWidth / 2;
+			camSpeed.set(0, -25f);
+		}
+		
+		if(camArea.y < 0 ){
+			camera.position.y = camera.viewportHeight / 2;
+			camera.update();
+			camArea.y = camera.position.y - camera.viewportHeight / 2;
+			camSpeed.set(-25f, 0);
+		}else if(camArea.y + camArea.height > worldSize){
+			camera.position.y = worldSize - camArea.height / 2;
+			camera.update();
+			camArea.y = camera.position.y - camera.viewportHeight / 2;
+			camSpeed.set(25f,  0);
+		}
+		
+
 
 	}
 	
