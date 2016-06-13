@@ -1,5 +1,8 @@
 package com.lightbringer.game.world;
 
+import box2dLight.Light;
+import box2dLight.RayHandler;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -16,8 +19,10 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.lightbringer.game.world.entities.ElementManager;
 
 public class WorldScreen implements Screen {
 
@@ -30,18 +35,20 @@ public class WorldScreen implements Screen {
 	
 	private OrthographicCamera camera;
 	private Rectangle camArea;
-	private Vector2 camSpeed;
 	
 	private SpriteBatch batch;
+	
+	private InputHandler input;
 	
 	private Stage worldUI;
 	private World world;
 	private Box2DDebugRenderer debugRenderer;
+	private RayHandler rayHandler;
 	
 	private Skin skin;
 	private Label loading;
 	
-	static final int LOAD_STATE = 0, PLAY_STATE = 1;
+	public static final int LOAD_STATE = 0, PLAY_STATE = 1;
 	private int state = 0;
 
 	public WorldScreen(String worldName){
@@ -58,14 +65,22 @@ public class WorldScreen implements Screen {
 		
 		worldSize = 64;
 		
+		input = new InputHandler(WIDTH, HEIGHT);
+		
+		RayHandler.setGammaCorrection(true);
+		RayHandler.useDiffuseLight(true);
+		
+		rayHandler = new RayHandler(world);
+		rayHandler.setAmbientLight(0f, 0f,0f, 1f);
+		rayHandler.setBlurNum(1);
+		
 		elemManager = new ElementManager();
-		elemManager.show(world, worldSize, this);
+		elemManager.show(world, worldSize, rayHandler, this, input);
 		
 		batch = new SpriteBatch();
 		
 		camera = new OrthographicCamera(1f, 1f * HEIGHT / WIDTH);
 		camera.setToOrtho(false, 30f, 30f * (float) HEIGHT / WIDTH);
-		camSpeed = new Vector2(-.5f, 0);
 		camera.update();
 		camArea = new Rectangle(camera.position.x, camera.position.y, camera.viewportWidth, camera.viewportHeight);
 		Gdx.app.log("WS", "CamArea: " + camArea.x + " " + camArea.y + " " + camArea.width + " " + camArea.height);
@@ -122,11 +137,16 @@ public class WorldScreen implements Screen {
 			elemManager.render(camArea, batch);
 			
 			batch.end();
-
-//			debugRenderer.render(world, camera.combined);
+			
+			rayHandler.setCombinedMatrix(camera);
+			rayHandler.updateAndRender();
+			
+			debugRenderer.render(world, camera.combined);
 			
 			worldUI.draw();
 			
+			input.update();
+			elemManager.update(delta);
 			worldUI.act();
 			world.step(1/60f, 6, 2);
 
@@ -137,8 +157,7 @@ public class WorldScreen implements Screen {
 	
 	private void updateCam(float delta){
 		
-		
-		camera.translate(camSpeed.x * delta , camSpeed.y * delta);
+		camera.position.set(elemManager.getPlayerPos(), 0);
 		
 		camera.update();
 		camArea.x = camera.position.x - camera.viewportWidth / 2;
@@ -146,28 +165,24 @@ public class WorldScreen implements Screen {
 		camArea.height = camera.viewportHeight;
 		camArea.width = camera.viewportWidth;
 		
-		if(camArea.x < 0 ){
-			camera.position.x = camera.viewportWidth / 2;
+		if(camArea.x < -0.5 ){
+			camera.position.x = camera.viewportWidth / 2 - 0.5f;
 			camera.update();
 			camArea.x = camera.position.x - camera.viewportWidth / 2;
-			camSpeed.set(0, 25f);
-		}else if(camArea.x + camArea.width > worldSize){
-			camera.position.x = worldSize - camArea.width / 2;
+		}else if(camArea.x + camArea.width > worldSize - 0.5){
+			camera.position.x = worldSize - camArea.width / 2 - 0.5f;
 			camera.update();
 			camArea.x = camera.position.x - camera.viewportWidth / 2;
-			camSpeed.set(0, -25f);
 		}
 		
-		if(camArea.y < 0 ){
-			camera.position.y = camera.viewportHeight / 2;
+		if(camArea.y < -0.5 ){
+			camera.position.y = camera.viewportHeight / 2 - 0.5f;
 			camera.update();
 			camArea.y = camera.position.y - camera.viewportHeight / 2;
-			camSpeed.set(-25f, 0);
-		}else if(camArea.y + camArea.height > worldSize){
-			camera.position.y = worldSize - camArea.height / 2;
+		}else if(camArea.y + camArea.height > worldSize - 0.5){
+			camera.position.y = worldSize - camArea.height / 2 - 0.5f;
 			camera.update();
 			camArea.y = camera.position.y - camera.viewportHeight / 2;
-			camSpeed.set(25f,  0);
 		}
 		
 
