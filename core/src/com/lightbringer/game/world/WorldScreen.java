@@ -40,13 +40,11 @@ public class WorldScreen implements Screen {
 	
 	private InputHandler input;
 	
-	private Stage worldUI;
 	private World world;
 	private Box2DDebugRenderer debugRenderer;
 	private RayHandler rayHandler;
-	
-	private Skin skin;
-	private Label loading;
+
+	WorldUI worldUI;
 	
 	public static final int LOAD_STATE = 0, PLAY_STATE = 1;
 	private int state = 0;
@@ -89,21 +87,10 @@ public class WorldScreen implements Screen {
 //		Viewport viewport = new ExtendViewport(WIDTH, HEIGHT, camera);
 //		viewport.setCamera(camera);
 		
-		worldUI = new Stage();
-		Gdx.input.setInputProcessor(worldUI);
-//		worldUI.setViewport(viewport);
-		skin = new Skin(Gdx.files.internal("uiskin.json"));
-		
-		Table table = new Table();
-		table.setFillParent(true);
-		
-		loading = new Label("Loading.", skin);
-		table.add(loading).center();
-		worldUI.addActor(table);
+		worldUI = new WorldUI();
 		
 	}
 
-	private int loadCount = 0;
 	
 	@Override
 	public void render(float delta) {
@@ -115,20 +102,7 @@ public class WorldScreen implements Screen {
 		
 		switch(state){
 		case LOAD_STATE:
-				if(loadCount == 30){
-				if(loading.textEquals("Loading."))
-					loading.setText("Loading..");
-				else if(loading.textEquals("Loading.."))
-					loading.setText("Loading...");
-				else if(loading.textEquals("Loading..."))
-					loading.setText("Loading.");
-				loadCount = 0;
-			}else{
-				loadCount++;
-			}
-			
-			worldUI.act();
-			worldUI.draw();
+
 			break;
 		case PLAY_STATE:
 			updateCam(delta);
@@ -144,15 +118,14 @@ public class WorldScreen implements Screen {
 			
 //			debugRenderer.render(world, camera.combined);
 			
-			worldUI.draw();
-			
 			input.update();
 			elemManager.update(delta);
-			worldUI.act();
 			world.step(1/60f, 6, 2);
 
 			break;
 		}
+		
+		worldUI.render(state);
 
 	}
 	
@@ -186,8 +159,6 @@ public class WorldScreen implements Screen {
 			camArea.y = camera.position.y - camera.viewportHeight / 2;
 		}
 		
-
-
 	}
 	
 	@Override

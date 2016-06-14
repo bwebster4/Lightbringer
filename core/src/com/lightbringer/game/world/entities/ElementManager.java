@@ -65,7 +65,8 @@ public class ElementManager {
 
 		characters = new ArrayMap<String, Character>();
 		
-		Player player = (Player) createCharacter(new Vector2(5, 5), "character0", Species.Human, true);
+		Player player = (Player) createCharacter(new Vector2(5, 5),
+				new String[]{"character0", "character94", "character34"}, Species.Human, true);
 		characters.insert(characters.size, "Player", player);
 		
 		Thread genThread = new Thread(new WorldGen(worldSize, world));
@@ -87,7 +88,7 @@ public class ElementManager {
 		}
 	}
 	
-	public Character createCharacter(Vector2 pos, String textureName, Species species, boolean isPlayer){
+	public Character createCharacter(Vector2 pos, String[] textureNames, Species species, boolean isPlayer){
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
 		bodyDef.position.set(pos.x, pos.y);
@@ -108,8 +109,13 @@ public class ElementManager {
 		body.createFixture(fixtureDef);
 		box.dispose();
 		
+		Array<TextureRegion> textures = new Array<TextureRegion>();
+		for(String textureName : textureNames){
+			textures.add(getCharacterTexture(textureName));
+		}
+		
 		if(isPlayer){
-			Player player = new Player(body, getCharacterTexture(textureName), species);
+			Player player = new Player(body, textures, species);
 			player.setInput(input);
 			
 			PointLight light = new PointLight(
@@ -154,6 +160,9 @@ public class ElementManager {
 	
 	public Vector2 getPlayerPos(){
 		return characters.get("Player").body.getPosition();
+	}
+	public Player getPlayer(){
+		return (Player) characters.get("Player");
 	}
 	
 	public int findTextureType(boolean[] areBlocks){

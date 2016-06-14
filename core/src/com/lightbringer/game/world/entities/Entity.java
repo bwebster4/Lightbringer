@@ -18,6 +18,7 @@ public abstract class Entity{
 		this.body = body;
 		sprite = new Sprite(texture);
 		sprite.setBounds(body.getPosition().x - size / 2, body.getPosition().y - size / 2, size, size);
+		sprite.setOriginCenter();
 	}
 	
 	public abstract void update(float delta);
@@ -26,6 +27,10 @@ public abstract class Entity{
 		sprite.setPosition(body.getPosition().x - sprite.getWidth() / 2, body.getPosition().y - sprite.getHeight() / 2);
 
 		sprite.draw(batch);
+	}
+	
+	public Vector2 getPosition(){
+		return body.getPosition();
 	}
 	
 	

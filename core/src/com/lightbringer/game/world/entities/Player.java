@@ -4,14 +4,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.utils.Array;
 import com.lightbringer.game.world.InputHandler;
 
 public class Player extends Character{
 
 	InputHandler input;
 	
-	public Player(Body body, TextureRegion texture, Species species) {
-		super(body, texture, species);
+	public Player(Body body, Array<TextureRegion> textures, Species species) {
+		super(body, textures, species);
 		// TODO Auto-generated constructor stub
 	}
 	
