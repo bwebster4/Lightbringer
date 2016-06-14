@@ -72,7 +72,8 @@ public class WorldScreen implements Screen {
 		
 		rayHandler = new RayHandler(world);
 		rayHandler.setAmbientLight(0f, 0f,0f, 1f);
-		rayHandler.setBlurNum(1);
+		rayHandler.setBlurNum(3);
+		rayHandler.setShadows(true);
 		
 		elemManager = new ElementManager();
 		elemManager.show(world, worldSize, rayHandler, this, input);
@@ -141,7 +142,7 @@ public class WorldScreen implements Screen {
 			rayHandler.setCombinedMatrix(camera);
 			rayHandler.updateAndRender();
 			
-			debugRenderer.render(world, camera.combined);
+//			debugRenderer.render(world, camera.combined);
 			
 			worldUI.draw();
 			

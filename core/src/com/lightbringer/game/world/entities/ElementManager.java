@@ -14,6 +14,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
@@ -25,6 +26,7 @@ import com.lightbringer.game.world.WorldScreen;
 public class ElementManager {
 	
 	static final int RAYS_PER_BALL = 128;
+	static final short C_CATEGORY_CHARACTERS = 0x0001;
 	
 	WorldScreen worldScreen;
 	InputHandler input;
@@ -55,8 +57,11 @@ public class ElementManager {
 			e.printStackTrace();
 		}
 		
+		Filter filter = new Filter();
+		filter.maskBits = ~C_CATEGORY_CHARACTERS;
 		
 		lights = new Array<Light>();
+//		Light.setGlobalContactFilter(filter);
 
 		characters = new ArrayMap<String, Character>();
 		
@@ -86,6 +91,7 @@ public class ElementManager {
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
 		bodyDef.position.set(pos.x, pos.y);
+		bodyDef.fixedRotation = true;
 		
 		Body body = world.createBody(bodyDef);
 		
@@ -97,8 +103,8 @@ public class ElementManager {
 		fixtureDef.density = 1f;
 		fixtureDef.friction = .1f;
 		fixtureDef.restitution = .1f;
+		fixtureDef.filter.categoryBits = C_CATEGORY_CHARACTERS;
 
-		
 		body.createFixture(fixtureDef);
 		box.dispose();
 		
@@ -107,13 +113,16 @@ public class ElementManager {
 			player.setInput(input);
 			
 			PointLight light = new PointLight(
-					rayHandler, RAYS_PER_BALL, null, 5f, 0f, 0f);
-			light.attachToBody(player.body, species.getSize() / 2, species.getSize() / 2f);
+					rayHandler, RAYS_PER_BALL, null, 10f, 0f, 0f);
+			light.attachToBody(player.body, 0, 0);
 			light.setColor(
 					1f,
 					1f,
 					1f,
-					1f);
+					.75f);
+//			light.setXray(false);
+			light.setSoftnessLength(1);
+			light.setIgnoreAttachedBody(true);
 			lights.add(light);
 			
 			return player;
