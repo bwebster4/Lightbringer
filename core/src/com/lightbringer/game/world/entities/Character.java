@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ArrayMap;
 import com.lightbringer.game.world.entities.items.AbstractItem;
 
 public abstract class Character extends Entity {
@@ -18,8 +19,10 @@ public abstract class Character extends Entity {
 	
 	protected Species species;
 	private Array<TextureRegion> bodyTextures;
-	protected Array<AbstractItem> items;
+	protected Array<AbstractItem> inventory;
+	protected ArrayMap<Integer, AbstractItem> equipped;
 	protected Array<Sprite> sprites;
+//	protected ArrayMap<String, Integer> attributes;
 
 	public Character(Body body, Array<TextureRegion> textures, Species species) {
 		super(body, textures.first(), species.getSize());
@@ -28,6 +31,11 @@ public abstract class Character extends Entity {
 		
 		sprites = new Array<Sprite>();
 		sprites.add(sprite);
+		
+//		attributes = new ArrayMap<String, Integer>();
+		
+		inventory = new Array<AbstractItem>();
+		equipped = new ArrayMap<Integer, AbstractItem>();
 		
 		for(TextureRegion texture : textures){
 			if(texture != textures.first()){
@@ -47,6 +55,9 @@ public abstract class Character extends Entity {
 		for(Sprite sprite: sprites){
 			sprite.setPosition(body.getPosition().x - sprite.getWidth() / 2, body.getPosition().y - sprite.getHeight() / 2);
 			sprite.draw(batch);			
+		}
+		for(AbstractItem item : equipped.values()){
+			item.draw(batch);
 		}
 	}
 

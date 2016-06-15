@@ -22,10 +22,12 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
 import com.lightbringer.game.world.InputHandler;
 import com.lightbringer.game.world.WorldScreen;
+import com.lightbringer.game.world.entities.items.Item;
+import com.lightbringer.game.world.entities.items.LightItem;
 
 public class ElementManager {
 	
-	static final int RAYS_PER_BALL = 128;
+	public static final int RAYS_PER_BALL = 128;
 	static final short C_CATEGORY_CHARACTERS = 0x0001;
 	
 	WorldScreen worldScreen;
@@ -118,18 +120,22 @@ public class ElementManager {
 			Player player = new Player(body, textures, species);
 			player.setInput(input);
 			
-			PointLight light = new PointLight(
-					rayHandler, RAYS_PER_BALL, null, 10f, 0f, 0f);
-			light.attachToBody(player.body, 0, 0);
-			light.setColor(
-					1f,
-					1f,
-					1f,
-					.75f);
-//			light.setXray(false);
-			light.setSoftnessLength(1);
-			light.setIgnoreAttachedBody(true);
-			lights.add(light);
+			LightItem flashlight = new LightItem(Item.Flashlight, player, getCharacterTexture(Item.Flashlight.getTextureName()), rayHandler);
+			player.addItem(flashlight);
+			player.equipItem(0);
+			
+//			PointLight light = new PointLight(
+//					rayHandler, RAYS_PER_BALL, null, 10f, 0f, 0f);
+//			light.attachToBody(player.body, 0, 0);
+//			light.setColor(
+//					1f,
+//					1f,
+//					1f,
+//					.75f);
+////			light.setXray(false);
+//			light.setSoftnessLength(1);
+//			light.setIgnoreAttachedBody(true);
+//			lights.add(light);
 			
 			return player;
 		}else{

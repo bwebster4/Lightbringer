@@ -116,7 +116,7 @@ public class WorldScreen implements Screen {
 			rayHandler.setCombinedMatrix(camera);
 			rayHandler.updateAndRender();
 			
-//			debugRenderer.render(world, camera.combined);
+			debugRenderer.render(world, camera.combined);
 			
 			input.update();
 			elemManager.update(delta);

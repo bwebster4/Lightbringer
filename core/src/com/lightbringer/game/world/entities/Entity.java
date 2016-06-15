@@ -11,7 +11,7 @@ public abstract class Entity{
 	public static final float SIZE_PROJECTILE = .08f,
 				SIZE_MEDIUM_S = .5f, SIZE_MEDIUM_M = .73f, SIZE_MEDIUM_L = .93f;
 	
-	Body body;
+	public Body body;
 	Sprite sprite;
 	
 	public Entity(Body body, TextureRegion texture, float size){

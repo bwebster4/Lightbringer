@@ -9,4 +9,10 @@ public class WeaponItem extends AbstractItem{
 		super(item, character, texture);
 	}
 
+	@Override
+	public void update(float delta) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -6,6 +6,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.Array;
 import com.lightbringer.game.world.InputHandler;
+import com.lightbringer.game.world.entities.items.AbstractItem;
+import com.lightbringer.game.world.entities.items.LightItem;
 
 public class Player extends Character{
 
@@ -13,7 +15,7 @@ public class Player extends Character{
 	
 	public Player(Body body, Array<TextureRegion> textures, Species species) {
 		super(body, textures, species);
-		// TODO Auto-generated constructor stub
+
 	}
 	
 	public void setInput(InputHandler input){
@@ -40,7 +42,22 @@ public class Player extends Character{
 		}else{
 			body.applyLinearImpulse(- vel.x * delta, 0, body.getPosition().x, body.getPosition().y, true);
 		}	
+		
+
+		for(AbstractItem item : equipped.values()){
+			Gdx.app.log("Player", "Body: " + body.getPosition());
+			item.update(delta);
+		}
 				
+	}
+	
+	public void addItem(AbstractItem item){
+		inventory.add(item);
+	}
+	
+	public void equipItem(int index){
+		AbstractItem item = inventory.removeIndex(index);
+		equipped.insert(equipped.size, item.getItem().getEquipSlot(), item);
 	}
 	
 }
