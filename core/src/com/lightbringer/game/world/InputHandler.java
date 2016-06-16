@@ -4,7 +4,7 @@ package com.lightbringer.game.world;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.Vector2;
 
 public class InputHandler {
 	
@@ -26,12 +26,13 @@ public class InputHandler {
 	boolean isLeftButtonPressed = false, isLeftButtonHeld = false, isLeftButtonReleased = true;
 	boolean isRightButtonPressed = false, isRightButtonHeld = false, isRightButtonReleased = true;
 	int mousex, mousey;
-	Vector3 mousepos;
-	public InputHandler(float WIDTH, float HEIGHT){
+	Vector2 mousepos;
+	WorldScreen worldScreen;
+	public InputHandler(float WIDTH, float HEIGHT, WorldScreen worldScreen){
 		this.WIDTH = WIDTH;
 		this.HEIGHT = HEIGHT;
-		
-		mousepos = new Vector3();
+		this.worldScreen = worldScreen;
+		mousepos = new Vector2();
 	}
 	
 	public void resize(float width, float height){
@@ -62,7 +63,8 @@ public class InputHandler {
 		isRightButtonPressed = Gdx.input.isButtonPressed(Buttons.RIGHT);
 		pressrelease("RMB");
 		
-		mousepos.set(Gdx.input.getX(), HEIGHT-Gdx.input.getY(), 0);
+		mousepos.set(worldScreen.unproject(Gdx.input.getX(), Gdx.input.getY()));
+		
 	}
 	void pressrelease(String type){
 		if (type == "E"){
@@ -179,7 +181,7 @@ public class InputHandler {
 	public boolean isRightButtonHeld(){
 		return isRightButtonHeld;
 	}
-	public Vector3 getMousePos(){
+	public Vector2 getMousePos(){
 		return mousepos;
 	}
 }

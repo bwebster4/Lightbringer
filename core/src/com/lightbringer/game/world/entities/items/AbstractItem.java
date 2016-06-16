@@ -9,7 +9,7 @@ import com.lightbringer.game.world.entities.Character;
 public abstract class AbstractItem {
 
 	private Item item;
-	private Character character;
+	protected Character character;
 	private Sprite sprite;
 	protected ArrayMap<String, Integer> attributes;
 	

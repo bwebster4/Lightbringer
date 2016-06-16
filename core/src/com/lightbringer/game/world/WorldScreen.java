@@ -13,6 +13,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -63,7 +64,7 @@ public class WorldScreen implements Screen {
 		
 		worldSize = 64;
 		
-		input = new InputHandler(WIDTH, HEIGHT);
+		input = new InputHandler(WIDTH, HEIGHT, this);
 		
 		RayHandler.setGammaCorrection(true);
 		RayHandler.useDiffuseLight(true);
@@ -116,7 +117,7 @@ public class WorldScreen implements Screen {
 			rayHandler.setCombinedMatrix(camera);
 			rayHandler.updateAndRender();
 			
-			debugRenderer.render(world, camera.combined);
+//			debugRenderer.render(world, camera.combined);
 			
 			input.update();
 			elemManager.update(delta);
@@ -189,13 +190,23 @@ public class WorldScreen implements Screen {
 		return state;
 	}
 
+	Vector3 vec3 = new Vector3();
+	public Vector2 unproject(Vector2 vec){
+		vec3.set(vec, 0);
+		vec3 = camera.unproject(vec3);
+		return new Vector2(vec3.x, vec3.y);
+	}
+	public Vector2 unproject(float x, float y){
+		vec3.set(x, y, 0);
+		vec3 = camera.unproject(vec3);
+		return new Vector2(vec3.x, vec3.y);
+	}
+	
 	public void setState(int state) {
 		if(this.state == WorldScreen.LOAD_STATE && state == PLAY_STATE){
 			worldUI.clear();
 		}
 		this.state = state;
-		
-		
 	}
 	
 	@Override

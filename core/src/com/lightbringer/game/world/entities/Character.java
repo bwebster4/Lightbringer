@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.Array;
@@ -16,6 +17,8 @@ public abstract class Character extends Entity {
 	public static final int HEAD = 0, CHEST = 1, LEGS = 2, ARMS = 3, HANDS = 4, 
 			COAT = 5, BELT = 6, BACK = 7, NECK = 8, FACE = 9, 
 			P_HAND = 10, O_HAND = 11, B_HANDS = 12; 
+	
+	protected Vector2 dirVec;
 	
 	protected Species species;
 	private Array<TextureRegion> bodyTextures;
@@ -49,6 +52,7 @@ public abstract class Character extends Entity {
 		
 		this.species = species;
 		
+		dirVec = new Vector2();
 	}
 	
 	public void draw(SpriteBatch batch){
@@ -65,6 +69,16 @@ public abstract class Character extends Entity {
 	
 	public float getSize(){
 		return species.getSize();
+	}
+	
+	public float getDirection(){
+		Gdx.app.log("Character", "DirVec" + dirVec);
+		float angle = (float) (MathUtils.radiansToDegrees * Math.atan2(dirVec.y, dirVec.x));
+		Gdx.app.log("Character","" + angle);
+	    if(angle < 0){
+	        angle += 360;
+	    }
+		return angle;
 	}
 	
 }

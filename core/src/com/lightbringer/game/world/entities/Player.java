@@ -2,6 +2,7 @@ package com.lightbringer.game.world.entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.Array;
@@ -44,8 +45,10 @@ public class Player extends Character{
 		}	
 		
 
+		dirVec.set(getPosition().add(input.getMousePos().scl(-1f))).scl(-1);
+		
+		
 		for(AbstractItem item : equipped.values()){
-			Gdx.app.log("Player", "Body: " + body.getPosition());
 			item.update(delta);
 		}
 				

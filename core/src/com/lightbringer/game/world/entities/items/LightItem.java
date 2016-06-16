@@ -21,20 +21,17 @@ public class LightItem extends AbstractItem{
 		if(item.getLightType() == "Cone"){
 			light = new ConeLight(rayHandler, ElementManager.RAYS_PER_BALL, null, item.getRange(), 0, 0, 0, 45);
 		}else if(item.getLightType() == "Point"){
-//			light = new PointLight(rayHandler, ElementManager.RAYS_PER_BALL, null, 10f, 0f, 0f);
+			light = new PointLight(rayHandler, ElementManager.RAYS_PER_BALL, null, item.getRange(), 0f, 0f);
 		}
 		light.setColor(1f, 1f, 1f, 1f);
-		light.attachToBody(character.body);
+//		light.attachToBody(character.body);
 		light.setSoftnessLength(1);
-		light.setIgnoreAttachedBody(true);
+//		light.setIgnoreAttachedBody(true);
 	}
 	
-	private float direction = 0;
 	public void update(float delta){
-		direction += 10f * delta;
-		Gdx.app.log("LightItem", "Direction: " + direction);
-		Gdx.app.log("LightItem", "Position: " + light.getPosition());
-		light.setDirection(direction);
+		light.setPosition(character.getPosition());
+		light.setDirection(character.getDirection());
 	}
 	
 }

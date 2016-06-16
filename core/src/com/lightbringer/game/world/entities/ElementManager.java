@@ -28,7 +28,8 @@ import com.lightbringer.game.world.entities.items.LightItem;
 public class ElementManager {
 	
 	public static final int RAYS_PER_BALL = 128;
-	static final short C_CATEGORY_CHARACTERS = 0x0001;
+	static final short C_CATEGORY_CHARACTERS = 0x0002;
+	static final short C_CATEGORY_ENVIRONMENT = 0x001;
 	
 	WorldScreen worldScreen;
 	InputHandler input;
@@ -63,7 +64,7 @@ public class ElementManager {
 		filter.maskBits = ~C_CATEGORY_CHARACTERS;
 		
 		lights = new Array<Light>();
-//		Light.setGlobalContactFilter(filter);
+		Light.setGlobalContactFilter(filter);
 
 		characters = new ArrayMap<String, Character>();
 		
@@ -123,19 +124,6 @@ public class ElementManager {
 			LightItem flashlight = new LightItem(Item.Flashlight, player, getCharacterTexture(Item.Flashlight.getTextureName()), rayHandler);
 			player.addItem(flashlight);
 			player.equipItem(0);
-			
-//			PointLight light = new PointLight(
-//					rayHandler, RAYS_PER_BALL, null, 10f, 0f, 0f);
-//			light.attachToBody(player.body, 0, 0);
-//			light.setColor(
-//					1f,
-//					1f,
-//					1f,
-//					.75f);
-////			light.setXray(false);
-//			light.setSoftnessLength(1);
-//			light.setIgnoreAttachedBody(true);
-//			lights.add(light);
 			
 			return player;
 		}else{
@@ -291,11 +279,14 @@ public class ElementManager {
 			
 			BodyDef stoneDef = new BodyDef();
 			stoneDef.type = BodyType.StaticBody;
+		
 			
 			PolygonShape square = new PolygonShape();
 			square.setAsBox(.5f, .5f);
+			
 
 			Body stone;
+			
 			
 			for(int x = 0; x < size; x++){
 				for(int y = 0; y < size; y++){
